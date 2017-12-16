@@ -2,7 +2,6 @@ import numpy as np
 import cv2
 
 cap = cv2.VideoCapture(0)
-import pyaudio
 xDifference = 0
 
 def ProcessImage(passedImage):
@@ -37,51 +36,31 @@ def DrawLines(lines,passedImage):
                     y1 = y2
                     y2 = y1_old
 
-                cv2.line(passedImage, (x1, y1), (x2, y2), (0, 255, 0), 10)
-                #cv2.line(passedImage, (x1, y1), (x1, y1), (255, 0, 0), 10)
-                #cv2.line(passedImage, (x2, y2), (x2, y2), (0, 0, 255), 10)
 
-                print("=========")
-                print(x1-x2)
+                cv2.line(passedImage, (x1, y1), (x2, y2), (0, 255, 0), 10)
+                cv2.line(passedImage, (x1, y1), (x1, y1), (255, 0, 0), 10)
+                cv2.line(passedImage, (x2, y2), (x2, y2), (0, 0, 255), 10)
+
+                #print(len(lines[0]))
                 global xDifference
-                xDifference = x1-x2
+                xDifference += x1-x2
+                xDifference = xDifference/len(lines[0])
+
+
 
     except:
         pass
     return passedImage
 
 
-def detectLanes(lines):
-    for line in lines:
-        for x1, y1, x2, y2 in line:
-            tilt = (x1-x2)
-            print(tilt)
-
-
-
-p = pyaudio.PyAudio()
-stream = p.open(format=pyaudio.paFloat32,
-                channels=1,
-                rate=44100,
-                output=True)
-
 
 while(True):
     # Capture frame-by-frame
     ret, webcamImage = cap.read()
     lines = ProcessImage(webcamImage)
-
+    print(xDifference)
     imageToShow = DrawLines(lines,webcamImage)
 
-    volume = 0.5  # range [0.0, 1.0]
-    fs = 44100  # sampling rate, Hz, must be integer
-    duration = 0.5  # in seconds, may be float
-    f = 440.0-xDifference  # sine frequency, Hz, may be float
-    print(f)
-    samples = (np.sin(2 * np.pi * np.arange(fs * duration) * f / fs)).astype(np.float32)
-
-
-    stream.write(volume * samples)
 
     #Display the resulting frame
     cv2.imshow('frame',imageToShow)
