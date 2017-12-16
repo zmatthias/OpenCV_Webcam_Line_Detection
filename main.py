@@ -1,12 +1,9 @@
 import numpy as np
 import cv2
 
-
 cap = cv2.VideoCapture(0)
 import pyaudio
-
 xDifference = 0
-
 
 def ProcessImage(passedImage):
 
@@ -21,7 +18,7 @@ def ProcessImage(passedImage):
 
     processedImage = cv2.Canny(processedImage, threshold1=20, threshold2=100)
     processedImage = cv2.GaussianBlur(processedImage,(7,7),0)
-    lines = cv2.HoughLinesP(processedImage, 1, np.pi/180, 10 ,np.array([]), 300, 20)
+    lines = cv2.HoughLinesP(processedImage, 1, np.pi/180, 10 ,np.array([]), 200, 20)
     return lines
 
 
